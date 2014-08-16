@@ -1,0 +1,34 @@
+{
+  "name": "arduino.vytronics",
+  "version": "0.0.0",
+  "description": "Vytronics HMI compliant asychronous Arduino driver for NodeJS",
+  "main": "arduino.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vytronics",
+    "hmi",
+    "scada",
+    "arduino",
+    "node"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vytronics/arduino.vytronics.git"
+  },
+  "dependencies": {
+    "firmata": "~0.3.3",
+    "log4js": "~0.6.14"
+  },
+  "devDependencies": {
+  },
+  "maintainers": [
+    {
+      "name": "Chuck Weissman",
+      "email": "support@vytronics.com"
+    }
+  ],
+  "author": "Chuck Weissman",
+  "license": "AGPL"
+}
