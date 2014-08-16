@@ -1,7 +1,7 @@
 #arduino.vytronics
-Arduino driver for vytronics.hmi SCADA project
+Demo SCADA system to visualize and control your Arduino board.
 
-Vytronics HMI compliant arduino driver suite. Developed for use in the design of Vytronics HMI, the 100% free, open-source SCADA.
+Uses vytronics.hmi, the 100% free and open-source SCADA system.
 
 Visit [www.vytronics.com] for more info.
 
@@ -19,11 +19,11 @@ EXPERIMENTAL
 
 Make sure you have [nodejs] installed on your computer.
 
-Download the sample from https://github.com/vytronics-samples/arduino-scada-demo.git and then do npm install.
+Download the sample from https://github.com/vytronics-samples/arduino.scada.git and then do npm install.
 
 ```
-git clone https://github.com/vytronics-samples/arduino-scada-demo.git
-cd arduino-scada-demo
+git clone https://github.com/vytronics-samples/arduino.scada.git
+cd arduino.scada
 npm install
 ```
 
@@ -42,7 +42,7 @@ Explore the source code and have fun.
 
 AGPL
 
-[https://github.com/vytronics-samples/arduino-scada-demo.git]:https://github.com/vytronics-samples/arduino-scada-demo.git
+[https://github.com/vytronics-samples/arduino.scada.git]:https://github.com/vytronics-samples/arduino.scada.git
 [www.vytronics.com]:http://www.vytronics.com
 [github.com/vytronics/vytronics.hmi.git]:https://github.com/vytronics/vytronics.hmi.git
 [www.npmjs.org/package/vytronics.hmi]:https://www.npmjs.org/package/vytronics.hmi
