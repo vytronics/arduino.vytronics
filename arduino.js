@@ -181,15 +181,19 @@ ArduinoFirmataDriver.prototype.register = function (itemname){
                 //Note closure captures pin and mode var from match
                 if (mode === 'input') return false;
                 self.board.digitalWrite(pin, value);
+                self.flashRxTx();
                 //Query board to get readback since output pins do not report
                 self.board.queryPinState(pin, function() {
+                    self.flashRxTx();
                     self.update_item( itemname, value);
                 });
             },
             start: function (){
                 //Note closure captures pin and mode var from match
+                                
                 self.board.pinMode( pin, modes[mode]);
                 self.board.digitalRead( pin, function (value){
+                    self.flashRxTx();
                     self.update_item(itemname, value);
                 });
                 
@@ -198,10 +202,8 @@ ArduinoFirmataDriver.prototype.register = function (itemname){
                 var mode_item = 'digital:' + pin + ':mode';
                 if ( self.items[mode_item] ) {
                     
-console.log('####write mode pin:' + pin + ' mode:' + mode + '[' + modes[mode] + ']');                    
                     self.update_item(mode_item, modes[mode]);
                 }
-                
             }
         };        
     }
@@ -245,6 +247,7 @@ console.log('####write mode pin:' + pin + ' mode:' + mode + '[' + modes[mode] + 
             value: 0,
             start: function (){
                 self.board.analogRead( pin, function (value){
+                    self.flashRxTx();
                     self.update_item(itemname, value);
                 });                
             }
@@ -300,11 +303,53 @@ ArduinoFirmataDriver.prototype.onBoardReady = function (){
     this.update_item('ready', 1);
 };
 
-//Precondition - item exists
 ArduinoFirmataDriver.prototype.update_item = function (itemname, value) {
-    this.log.debug('update_value itemname:' + itemname + ' value:' + value);
     
-    this.items[itemname].value = value;
+    var self = this;
+    
+    //Dont complain for built in items that are not registered
+    var item = self.items[itemname];
+    if ( !item ) {
+        
+        //This has to be a programmer error?
+        if ( !self.built_in_items[itemname] ) {
+            self.log.error('update_item program error - itemname not found:' + itemname);
+        }
+        
+        return;   
+    }
+        
+    //Avoid excessive noise.
+    item.value = value;
+    if ( item._update_timer ) {
+        return
+    }
+ 
+    var last_val = item.value;
+    item._update_timer = setTimeout( function (){
+        item._update_timer = undefined;
+        var value = self.items[itemname].value;
+        if ( value !== last_val ) {
+            self.update_item(itemname, value);
+        }
+    }, self.sampling_interval);
+    
+    this.log.debug('update_value itemname:' + itemname + ' value:' + value);
     this.emitter.emit('itemvalue', itemname, value,
                       1); //TODO - need quality constants
+};
+
+//Simulate RxTx lamps
+ArduinoFirmataDriver.prototype.flashRxTx = function(itemname) {
+    var self = this;
+    
+    var item = this.items[itemname];
+    if ( !item ) return;
+    
+    if (item.value !== 0) return;
+    
+    this.update_item(itemname, 1);
+    setTimeout( function() {
+        self.update_item(itemname, 0);
+    }, 500);
 };
