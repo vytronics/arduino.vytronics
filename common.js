@@ -31,6 +31,7 @@ module.exports.version = '0.0.0';
 
 module.exports.create_builtin_types = function (){
     
+    //TODO - put register logic here too
     return {
         
         //Board ready status indication. 0==not reaady 1== ready
@@ -41,7 +42,29 @@ module.exports.create_builtin_types = function (){
             start: function (){
                 //nothing really to do
             }
-        }
+        },
+        
+        //Tx lamp
+        txLED: {
+           type: 'internal',
+            mode: 'input',
+            value: 0,
+            start: function (){
+                //nothing really to do
+            }            
+        },
+        
+        //Rx lamp
+        rxLED: {
+           type: 'internal',
+            mode: 'input',
+            value: 0,
+            start: function (){
+                //nothing really to do
+            }            
+        }        
+        
+        
     };
 };
 
