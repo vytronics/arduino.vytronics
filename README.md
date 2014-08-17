@@ -27,6 +27,8 @@ cd arduino.scada
 npm install
 ```
 
+Modify project/project.yml to specify the actual port name your arduino is connected to, or set config.sim_mode to true
+to simulate a board. Right now the comm port is set to COM3.
 
 It will take a few minutes to download and build all of the dependencies. When it finishes you can run the SCADA system by typing the following command in the terminal:
 ```
