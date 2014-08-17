@@ -33,7 +33,7 @@ module.exports.version = '0.0.0';
 
 //Dependencies
 var events = require("events");
-var firmata = require('firmata');
+var common = require('./common');
 
 
 //Drivr must define a create function that returns required methods for a
@@ -41,7 +41,10 @@ var firmata = require('firmata');
 //for better modularization making all other methods private to callers.
 module.exports.create = function (config){
     
-    var arduino = new ArduinoFirmataDriver(config);
+    //Choose between the real firmata driver or simulation
+    var firmata = (config && (config.sim_mode == 'true')) ? require('./sim-board') : require('firmata');
+    
+    var arduino = new ArduinoFirmataDriver(config, firmata);
     
     if (!arduino) return undefined;
         
@@ -60,28 +63,18 @@ module.exports.create = function (config){
 /*
 Create a driver from config object
     config: {
-        mode: 'firmata',    //Default. Right now the only mode supported. Might implement native one day.
         log_level: 'all',   //see all log messages for driver
         port_name: 'COM1',  //Options. Leave undefined for auto search
         sampling_interval   //Board default is 19ms which is way fast. We make default 1000ms
     }    
     
 */
-function ArduinoFirmataDriver (config){
+function ArduinoFirmataDriver (config, firmata){
     
     var self = this;
     
     //define some built in items
-    this.built_in_items =  {
-        ready: {
-            type: 'internal',
-            mode: 'input',
-            value: false,
-            start: function (){
-                //nothing really to do
-            }
-        }
-    };
+    this.built_in_items =  common.create_builtin_types();
     
     //Subscribed items.
     this.items = {
@@ -146,7 +139,7 @@ itemname formats:
 ArduinoFirmataDriver.prototype.register = function (itemname){
     
     var self = this;
-    
+        
     var modes = {
         input: this.board.MODES.INPUT,
         output: this.board.MODES.OUTPUT
@@ -302,7 +295,7 @@ ArduinoFirmataDriver.prototype.onBoardReady = function (){
     }, this);
 
     
-    this.update_item('ready', true);
+    this.update_item('ready', 1);
 };
 
 //Precondition - item exists
