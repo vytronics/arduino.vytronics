@@ -42,7 +42,9 @@ var common = require('./common');
 module.exports.create = function (config){
     
     //Choose between the real firmata driver or simulation
-    var firmata = (config && (config.sim_mode == 'true')) ? require('./sim-board') : require('firmata');
+    var is_sim = config && (config.sim_mode == 'true') ? true : config.sim_mode === true;
+        
+    var firmata = is_sim ? require('./sim-board') : require('firmata');
     
     var arduino = new ArduinoFirmataDriver(config, firmata);
     
