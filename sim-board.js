@@ -125,7 +125,6 @@ Board.prototype.digitalRead = function(pin, callback) {
     this.pins[pin].interval_id = setInterval( function (){
         var value = getRandomInt(0, 2);
         self.pins[pin].value = value;
-        console.log('###PINVAAL:' + value);
         callback(value);
     }, this.sampling_interval);
 };
