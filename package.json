@@ -1,6 +1,6 @@
 {
   "name": "arduino.vytronics",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Vytronics HMI compliant asychronous Arduino driver for NodeJS",
   "main": "arduino.js",
   "scripts": {
