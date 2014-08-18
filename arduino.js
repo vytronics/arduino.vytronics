@@ -78,6 +78,8 @@ function ArduinoFirmataDriver (config, firmata){
     //define some built in items
     this.built_in_items =  common.create_builtin_types();
     
+    this.started = false;
+    
     //Subscribed items.
     this.items = {
     };
@@ -115,19 +117,16 @@ ArduinoFirmataDriver.prototype.start = function (){
        
     //TODO - stop any prev running board???
     
-    this.log.info('started');
+    if ( ! this.started ) {
     
-
-
-
+        this.log.info('started');
+    }
+    
 };
 
 ArduinoFirmataDriver.prototype.stop = function (){
     this.log.info('driver stop method called');
     
-    //TODO - cleanup?
-    
-    this.board.close(function() { /*do nothing?*/ });
 };
 
 /*
@@ -181,10 +180,10 @@ ArduinoFirmataDriver.prototype.register = function (itemname){
                 //Note closure captures pin and mode var from match
                 if (mode === 'input') return false;
                 self.board.digitalWrite(pin, value);
-                self.flashRxTx();
+                self.flashTx();
                 //Query board to get readback since output pins do not report
                 self.board.queryPinState(pin, function() {
-                    self.flashRxTx();
+                    self.flashRx();
                     self.update_item( itemname, value);
                 });
             },
@@ -193,7 +192,7 @@ ArduinoFirmataDriver.prototype.register = function (itemname){
                                 
                 self.board.pinMode( pin, modes[mode]);
                 self.board.digitalRead( pin, function (value){
-                    self.flashRxTx();
+                    self.flashRx();
                     self.update_item(itemname, value);
                 });
                 
@@ -247,7 +246,7 @@ ArduinoFirmataDriver.prototype.register = function (itemname){
             value: 0,
             start: function (){
                 self.board.analogRead( pin, function (value){
-                    self.flashRxTx();
+                    self.flashRx();
                     self.update_item(itemname, value);
                 });                
             }
@@ -301,6 +300,7 @@ ArduinoFirmataDriver.prototype.onBoardReady = function (){
 
     
     this.update_item('ready', 1);
+    
 };
 
 ArduinoFirmataDriver.prototype.update_item = function (itemname, value) {
@@ -352,4 +352,10 @@ ArduinoFirmataDriver.prototype.flashRxTx = function(itemname) {
     setTimeout( function() {
         self.update_item(itemname, 0);
     }, 500);
+};
+ArduinoFirmataDriver.prototype.flashRx = function() {
+    this.flashRxTx('rxLED');
+};
+ArduinoFirmataDriver.prototype.flashTx = function() {
+    this.flashRxTx('txLED');
 };
