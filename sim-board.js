@@ -124,8 +124,12 @@ Board.prototype.digitalRead = function(pin, callback) {
     
     this.pins[pin].interval_id = setInterval( function (){
         var value = getRandomInt(0, 2);
-        self.pins[pin].value = value;
-        callback(value);
+                
+        //Only report if value changes
+        if (value !== self.pins[pin].value){
+            self.pins[pin].value = value;
+            callback(value);
+        }
     }, this.sampling_interval);
 };
 
@@ -136,11 +140,13 @@ Board.prototype.analogRead = function(pin, callback) {
     this.analogPins[pin].interval_id = setInterval( function (){
         var value = self.analogPins[pin].value + getRandomInt(-100, 100);
         value = (value < 0) ? 0 : value;
-        value = (value > 1023) ? 0 : value;
-        self.analogPins[pin].value = value;
+        value = (value > 1023) ? 0 : value;        
         
-        //Report event
-        callback(value);
+        //Only report event if value changes
+        if (value !== self.analogPins[pin].value){     
+            self.analogPins[pin].value = value;
+            callback(value);
+        }
     }, this.sampling_interval);
 };
 
